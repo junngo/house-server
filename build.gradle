@@ -28,6 +28,15 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// For XML
+	implementation 'org.springframework:spring-oxm'
+	implementation 'javax.xml.bind:jaxb-api:2.2.11'
+	implementation 'com.sun.xml.bind:jaxb-core:2.2.11'
+	implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
+	implementation 'javax.activation:activation:1.1.1'
+
+	// For test
 	testRuntimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.batch:spring-batch-test'

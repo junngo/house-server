@@ -14,7 +14,7 @@ public class LawdService {
 
     @Transactional
     public void upsert(Lawd lawd) {
-        // 데이터가 존재하면 수정, 없을 때는 생
+        // 데이터가 존재하면 수정, 없을 때는 생성
         Lawd select_lawd = lawdRepository.findByLawdCode(lawd.getLawdCode())
                 .orElseGet(Lawd::new);
         select_lawd.setLawdCode(lawd.getLawdCode());
