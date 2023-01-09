@@ -19,10 +19,8 @@
 - aptTrInsertJob: 실거래가 데이터 입력 배치
 
 ```
---spring.batch.job.names=aptTrInsertJob -filePath=apt_api_response_sample.xml
+--spring.batch.job.names=aptTrInsertJob -lawdCode=41590 -yearMonth=2023-01
 ```
-
-http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?LAWD_CD=41590&DEAL_YMD=202301&serviceKey=
 
 ### 코드 사이트
 

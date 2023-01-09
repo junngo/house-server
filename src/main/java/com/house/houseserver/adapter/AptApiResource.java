@@ -28,7 +28,7 @@ public class AptApiResource {
 
     public Resource getResource(String lawdCode, YearMonth yearMonth) {
 
-        String url = String.format("%s?serviceKey=%s&LAWD_CD=%s&DEAL_YMD=%s", path, serviceKey, lawdCode,
+        String url = String.format("%s?serviceKey=%s&LAWD_CD=%s&DEAL_YMD=%s&numOfRows=1000", path, serviceKey, lawdCode,
                 yearMonth.format(DateTimeFormatter.ofPattern("yyyyMM")));
 
         log.info("Resource URL = " + url);
