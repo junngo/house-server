@@ -22,5 +22,4 @@ public class LawdService {
         select_lawd.setExist(lawd.getExist());
         lawdRepository.save(select_lawd);
     }
-
 }

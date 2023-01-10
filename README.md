@@ -19,10 +19,10 @@
 - aptTrInsertJob: 실거래가 데이터 입력 배치
 
 ```
---spring.batch.job.names=aptTrInsertJob -lawdCode=41590 -yearMonth=2023-01
+--spring.batch.job.names=aptTrInsertJob -yearMonth=2023-01
 ```
 
-### 코드 사이트
+### 공공 데이터 제공 사이트
 
 - 법정동 코드: https://www.code.go.kr/stdcode/regCodeL.do
 - 실거래가: https://www.data.go.kr/

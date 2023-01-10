@@ -21,10 +21,10 @@ public class Lawd {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lawdId;
+    private Long lawdId;            // 기본키
 
     @Column(nullable = false)
-    private String lawdCode;
+    private String lawdCode;        // 유니크
 
     @Column(nullable = false)
     private String lawdDong;
