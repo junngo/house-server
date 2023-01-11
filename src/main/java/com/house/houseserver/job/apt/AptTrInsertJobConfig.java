@@ -4,6 +4,7 @@ import com.house.houseserver.adapter.AptApiResource;
 import com.house.houseserver.core.domain.lawd.LawdRepository;
 import com.house.houseserver.core.dto.AptTrDto;
 import com.house.houseserver.job.validator.YearMonthParamValidator;
+import com.house.houseserver.service.AptTrService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
@@ -48,14 +49,13 @@ public class AptTrInsertJobConfig {
     @Bean
     public Job aptTrInsertJob(
             Step guLawdCodeStep,
-            Step contextPrintStep
-//            Step aptTrInsertStep
+            Step aptTrInsertStep
     ) {
         return jobBuilderFactory.get("aptTrInsertJob")
                 .incrementer(new RunIdIncrementer())
                 .validator(aptTrJobParamValidator())
                 .start(guLawdCodeStep)
-                .on(CONTINUABLE).to(contextPrintStep).next(guLawdCodeStep)
+                .on(CONTINUABLE).to(aptTrInsertStep).next(guLawdCodeStep)
                 .from(guLawdCodeStep)
                 .on("*").end()
                 .end()
@@ -181,9 +181,10 @@ public class AptTrInsertJobConfig {
 
     @StepScope
     @Bean
-    public ItemWriter<AptTrDto> aptTrWriter() {
+    public ItemWriter<AptTrDto> aptTrWriter(AptTrService aptTrService) {
         return items -> {
-            items.forEach(System.out::println);
+            items.forEach(aptTrService::upsert);
+            System.out.println("============= Writing Completed =============");
         };
     }
 }

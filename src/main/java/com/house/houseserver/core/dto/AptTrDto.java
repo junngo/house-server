@@ -1,10 +1,13 @@
 package com.house.houseserver.core.dto;
 
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.Getter;
 import lombok.ToString;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 /**
@@ -17,6 +20,15 @@ public class AptTrDto {
 
     @XmlElement(name = "거래금액")
     private String trAmount;
+
+    /**
+     *
+     * @return dealAmount - String to Long
+     */
+    public Long getTrAmount() {
+        String amount = trAmount.replace(",", "").trim();
+        return Long.parseLong(amount);
+    }
 
     @XmlElement(name = "건축년도")
     private Integer builtYear;
@@ -36,6 +48,10 @@ public class AptTrDto {
     @XmlElement(name = "일")
     private Integer day;
 
+    public LocalDate getTrDate() {
+        return LocalDate.of(year, month, day);
+    }
+
     @XmlElement(name = "전용면적")
     private Double exclusiveArea;
 
@@ -53,8 +69,24 @@ public class AptTrDto {
     private Integer floor;
 
     @XmlElement(name = "해제사유발생일")
-    private String dealCanceledDate;    //  21.07.30
+    private String trCanceledDate;    //  21.07.30
+
+    public LocalDate getTrCanceledDate() {
+        if (StringUtils.isBlank(trCanceledDate)) {
+            return null;
+        }
+        return LocalDate.parse(trCanceledDate.trim(), DateTimeFormatter.ofPattern("yy.MM.dd"));
+    }
 
     @XmlElement(name = "해제여부")
-    private String dealCanceled;        // O
+    private String trCanceled;        // O
+
+    /**
+     *
+     * @return dealCanceled - String to boolean
+     */
+    public boolean isTrCanceled() {
+        return "O".equals(trCanceled.trim());
+    }
+
 }
