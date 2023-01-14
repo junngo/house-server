@@ -4,7 +4,7 @@ import com.house.houseserver.adapter.AptApiResource;
 import com.house.houseserver.core.domain.lawd.LawdRepository;
 import com.house.houseserver.core.dto.AptTrDto;
 import com.house.houseserver.job.validator.YearMonthParamValidator;
-import com.house.houseserver.service.AptTrService;
+import com.house.houseserver.core.service.AptTrService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;

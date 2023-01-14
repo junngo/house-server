@@ -2,7 +2,7 @@ package com.house.houseserver.job.lawd;
 
 import com.house.houseserver.core.domain.lawd.Lawd;
 import com.house.houseserver.job.validator.FilePathValidator;
-import com.house.houseserver.service.LawdService;
+import com.house.houseserver.core.service.LawdService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

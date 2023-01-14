@@ -1,4 +1,4 @@
-package com.house.houseserver.service;
+package com.house.houseserver.core.service;
 
 import com.house.houseserver.core.domain.lawd.Lawd;
 import com.house.houseserver.core.domain.lawd.LawdRepository;

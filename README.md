@@ -22,6 +22,13 @@
 --spring.batch.job.names=aptTrInsertJob -yearMonth=2023-01
 ```
 
+- aptNotifyJob: 관심구에 대해서 알람 배치
+
+```
+--spring.batch.job.names=aptNotifyJob -trDate=2023-01-02
+```
+
+
 ### 공공 데이터 제공 사이트
 
 - 법정동 코드: https://www.code.go.kr/stdcode/regCodeL.do
