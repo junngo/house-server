@@ -55,9 +55,11 @@ public class AptTrInsertJobConfig {
                 .incrementer(new RunIdIncrementer())
                 .validator(aptTrJobParamValidator())
                 .start(guLawdCodeStep)
-                .on(CONTINUABLE).to(aptTrInsertStep).next(guLawdCodeStep)
+                    .on(CONTINUABLE)
+                        .to(aptTrInsertStep)
+                        .next(guLawdCodeStep)
                 .from(guLawdCodeStep)
-                .on("*").end()
+                    .on("*").end()
                 .end()
                 .build();
     }
