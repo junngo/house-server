@@ -26,10 +26,15 @@ public class AptApiResource {
     @Value("${external.apartment-api.service-key}")
     private String serviceKey;
 
-    public Resource getResource(String lawdCode, YearMonth yearMonth) {
+    public Resource getResource(String lawdCode, YearMonth yearMonth, int pageNum) {
 
-        String url = String.format("%s?serviceKey=%s&LAWD_CD=%s&DEAL_YMD=%s&numOfRows=10", path, serviceKey, lawdCode,
-                yearMonth.format(DateTimeFormatter.ofPattern("yyyyMM")));
+        String url = String.format("%s?serviceKey=%s&LAWD_CD=%s&DEAL_YMD=%s&pageNo=%s&numOfRows=300"
+                , path
+                , serviceKey
+                , lawdCode
+                , yearMonth.format(DateTimeFormatter.ofPattern("yyyyMM"))
+                , pageNum
+        );
 
         log.info("Resource URL = " + url);
 

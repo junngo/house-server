@@ -38,8 +38,14 @@ public class AptTrService {
                 apt, dto.getExclusiveArea(), dto.getTrDate(), dto.getTrAmount(), dto.getFloor()
         ).orElseGet(() -> AptTr.of(dto, apt));
 
+        // todo: 취소 건 데이터 클랜징 필요
+//        1. 동일 건 2건이 (취소 -> 계약) 순서로 들어 오는 경우가 존재하여, 계약 건은 저장 불필요(지금은 계약된 건으로 저장됨)
+//        2. 선 계약 1건이 아닌, 그냥 취소 1건으로 들어 오는 경우는 존재하는가? 그럼 아래 로직 사용시 누락 발생
+//        if (aptTr.isTrCanceled()) return;
+
         aptTr.setTrCanceled(dto.isTrCanceled());
         aptTr.setTrCanceledDate(dto.getTrCanceledDate());
+        System.out.println("APT TR: " + aptTr.toString());
         aptTrRepository.save(aptTr);
     }
 

@@ -2,9 +2,9 @@ package com.house.houseserver.job.apt;
 
 import com.house.houseserver.adapter.AptApiResource;
 import com.house.houseserver.core.domain.lawd.LawdRepository;
+import com.house.houseserver.core.dto.AptBodyOriginDto;
 import com.house.houseserver.core.dto.AptTrDto;
 import com.house.houseserver.job.validator.YearMonthParamValidator;
-import com.house.houseserver.core.service.AptTrService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
@@ -30,6 +30,7 @@ import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.List;
 
+
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
@@ -40,16 +41,21 @@ public class AptTrInsertJobConfig {
     private final AptApiResource aptApiResource;
     private final LawdRepository lawdRepository;
 
-    private static final String CONTINUABLE = "CONTINUABLE";
+    // [STEP1] LAWD 코드 조회 후 1개씩 넘겨주기 위한 상수
+    public static final String CONTINUABLE = "CONTINUABLE";
     private static final String GU_LAWD_CODE_LIST= "guLawdCodeList";
     private static final String ITEM_COUNT = "itemCount";
     private static final String GU_LAWD_CODE = "guLawdCode";
 
+    // [STEP2] 남은 데이터의 따른 API 요청을 위한 페이지 계산
+    public static final String PAGE_NO = "pageNo";
+    public static final String IS_SEARCH = "isSearch";
 
     @Bean
     public Job aptTrInsertJob(
             Step guLawdCodeStep,
-            Step aptTrInsertStep
+            Step aptTrInsertStep,
+            AptTrApiCallDecider decider
     ) {
         return jobBuilderFactory.get("aptTrInsertJob")
                 .incrementer(new RunIdIncrementer())
@@ -57,9 +63,13 @@ public class AptTrInsertJobConfig {
                 .start(guLawdCodeStep)
                     .on(CONTINUABLE)
                         .to(aptTrInsertStep)
+                            .next(decider)
+                                .on(CONTINUABLE).to(aptTrInsertStep)
+                            .from(decider)
+                                .on("*").end()
                         .next(guLawdCodeStep)
-                .from(guLawdCodeStep)
-                    .on("*").end()
+                    .from(guLawdCodeStep)
+                        .on("*").end()
                 .end()
                 .build();
     }
@@ -89,6 +99,7 @@ public class AptTrInsertJobConfig {
     @StepScope
     @Bean
     public Tasklet guLawdCodeTasklet() {
+        // todo: tasklet 별도 클래스로 분리 (리팩토링)
         return new Tasklet() {
             @Override
             public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
@@ -148,11 +159,11 @@ public class AptTrInsertJobConfig {
     @JobScope
     @Bean
     public Step aptTrInsertStep(
-            StaxEventItemReader<AptTrDto> aptTrReader,
-            ItemWriter<AptTrDto> aptTrWriter
+            StaxEventItemReader<AptBodyOriginDto> aptTrReader,
+            ItemWriter<AptBodyOriginDto> aptTrWriter
     ) {
         return stepBuilderFactory.get("aptTrInsertStep")
-                .<AptTrDto, AptTrDto>chunk(10)
+                .<AptBodyOriginDto, AptBodyOriginDto>chunk(1)
                 .reader(aptTrReader)
                 .writer(aptTrWriter)
                 .build();
@@ -160,15 +171,25 @@ public class AptTrInsertJobConfig {
 
     @StepScope
     @Bean
-    public StaxEventItemReader<AptTrDto> aptTrReader(
+    public StaxEventItemReader<AptBodyOriginDto> aptTrReader(
             @Value("#{jobExecutionContext['guLawdCode']}") String guLawdCode,
             @Value("#{jobParameters['yearMonth']}") String yearMonth,
+            @Value("#{jobExecutionContext['pageNo']}") Integer pageNo,
             Jaxb2Marshaller aptTrDtoMarshaller
     ) {
-        return new StaxEventItemReaderBuilder<AptTrDto>()
+
+        // 요청할 페이지 번호 예외처리
+        int pageNum;
+        if ((pageNo == null) || (pageNo == -1)) {
+            pageNum = 1;
+        } else {
+            pageNum = pageNo;
+        }
+
+        return new StaxEventItemReaderBuilder<AptBodyOriginDto>()
                 .name("aptTrReader")
-                .resource(aptApiResource.getResource(guLawdCode, YearMonth.parse(yearMonth)))
-                .addFragmentRootElements("item")
+                .resource(aptApiResource.getResource(guLawdCode, YearMonth.parse(yearMonth), pageNum))
+                .addFragmentRootElements("body")
                 .unmarshaller(aptTrDtoMarshaller)
                 .build();
     }
@@ -177,16 +198,12 @@ public class AptTrInsertJobConfig {
     @Bean
     public Jaxb2Marshaller aptTrDtoMarshaller() {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-        jaxb2Marshaller.setClassesToBeBound(AptTrDto.class);
+        jaxb2Marshaller.setClassesToBeBound(AptBodyOriginDto.class, AptTrDto.class);
         return jaxb2Marshaller;
     }
 
-    @StepScope
     @Bean
-    public ItemWriter<AptTrDto> aptTrWriter(AptTrService aptTrService) {
-        return items -> {
-            items.forEach(aptTrService::upsert);
-            System.out.println("============= Writing Completed =============");
-        };
+    public ItemWriter<AptBodyOriginDto> aptTrWriter(RetrievingItemWriter itemWriter) {
+        return itemWriter;
     }
 }

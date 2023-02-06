@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.ToString;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import java.util.Optional;
  */
 @ToString
 @Getter
-@XmlRootElement(name = "item")
 public class AptTrDto {
 
     @XmlElement(name = "거래금액")

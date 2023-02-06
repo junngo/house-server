@@ -54,7 +54,7 @@ public class AptTrInsertJobConfigTest {
         // when
         when(lawdRepository.findDistinctGuLawdCode()).thenReturn(Arrays.asList("11110"));
         // 실제는 Api로 받은 Resource, 테스트는 파일로 읽은 Resource
-        when(aptApiResource.getResource(anyString(), any())).thenReturn(
+        when(aptApiResource.getResource(anyString(), any(), any())).thenReturn(
                 new ClassPathResource("apt_api_response_sample.xml")
         );
 
@@ -80,7 +80,7 @@ public class AptTrInsertJobConfigTest {
         // when
         when(lawdRepository.findDistinctGuLawdCode()).thenReturn(Arrays.asList("11110", "41590"));
         // 실제는 Api로 받은 Resource, 테스트는 파일로 읽은 Resource
-        when(aptApiResource.getResource(anyString(), any())).thenReturn(
+        when(aptApiResource.getResource(anyString(), any(), any())).thenReturn(
                 new ClassPathResource("apt_api_response_sample.xml")
         );
 
@@ -100,7 +100,7 @@ public class AptTrInsertJobConfigTest {
         // given
         when(lawdRepository.findDistinctGuLawdCode()).thenReturn(Arrays.asList("11110"));
         // 실제는 Api로 받은 Resource, 테스트는 파일로 읽은 Resource
-        when(aptApiResource.getResource(anyString(), any())).thenReturn(
+        when(aptApiResource.getResource(anyString(), any(), any())).thenReturn(
                 new ClassPathResource("apt_api_response_sample.xml")
         );
 
